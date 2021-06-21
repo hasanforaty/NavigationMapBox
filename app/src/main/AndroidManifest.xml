@@ -12,10 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MapBoxTutorials">
         <activity
-            android:name=".MainActivity2"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.MapBoxTutorials.NoActionBar"></activity>
-        <activity android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MapBoxTutorials.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

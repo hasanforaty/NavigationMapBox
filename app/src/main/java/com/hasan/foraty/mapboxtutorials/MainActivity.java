@@ -1,121 +1,56 @@
 package com.hasan.foraty.mapboxtutorials;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.widget.Toast;
 
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private MapView mapView ;
+import android.view.Menu;
+import android.view.MenuItem;
 
-
-    private static final String SOURCE_ID = "Source_Id";
-    public static final String LAYOUT_ID = "Layout_Id";
-    public static final String ICON_ID = "Icon_Id";
-
-    private GeoJsonSource source ;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mapbox.getInstance(this,getString(R.string.mapbox_access_token));
-
         setContentView(R.layout.activity_main);
-        source = new GeoJsonSource(SOURCE_ID);
-        mapView = findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
-    }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-    @Override
-    public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        mapboxMap.setStyle(new Style.Builder()
-                .fromUri("mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41")
-                .withSource(source)
-                .withImage(ICON_ID, BitmapFactory.decodeResource(getResources(),R.drawable.mapbox_marker_icon_default))
-                .withLayer(new SymbolLayer(LAYOUT_ID, SOURCE_ID)
-                        .withProperties(
-                                iconImage(ICON_ID),
-                                iconAllowOverlap(true),
-                                iconIgnorePlacement(true)
-                        )
-                )
-
-        );
-        source.setGeoJson(FeatureCollection.fromFeatures(symbolLayerIconFeatureList));
-        mapboxMap.addOnMapClickListener(point ->{
-            addingPoint(point);
-            Toast.makeText(this,"this point is "+point,Toast.LENGTH_LONG).show();
-            return true;
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
         });
-        mapboxMap.addOnMapLongClickListener(point ->{
-            symbolLayerIconFeatureList.add(Feature.fromGeometry(Point.fromLngLat(point.getLongitude(),point.getLatitude())));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
             return true;
-        });
+        }
 
-
-
+        return super.onOptionsItemSelected(item);
     }
-
-    private void addingPoint(LatLng point){
-        symbolLayerIconFeatureList.add(Feature.fromGeometry(Point.fromLngLat(point.getLongitude(),point.getLatitude())));
-        source.setGeoJson(FeatureCollection.fromFeatures(symbolLayerIconFeatureList));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mapView.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-    private final List<Feature> symbolLayerIconFeatureList = new ArrayList<>();
-    private List<Feature> mockList(){
-
-        symbolLayerIconFeatureList.add(Feature.fromGeometry(
-                Point.fromLngLat(-57.225365, -33.213144)));
-        symbolLayerIconFeatureList.add(Feature.fromGeometry(
-                Point.fromLngLat(-54.14164, -33.981818)));
-        symbolLayerIconFeatureList.add(Feature.fromGeometry(
-                Point.fromLngLat(-56.990533, -30.583266)));
-        return symbolLayerIconFeatureList;
-    }
-
-
-
-
-
-
 }

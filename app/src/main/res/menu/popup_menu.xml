@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/defaultStyle"
+        android:title="@string/defaultstyle" />
+    <item android:id="@+id/monochromeDarkSyle"
+        android:title="@string/monochromedark_syle" />
+</menu>

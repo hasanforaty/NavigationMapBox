@@ -3,10 +3,16 @@ package com.hasan.foraty.mapboxtutorials;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
+import com.hasan.foraty.mapboxtutorials.viewmodel.MainViewModel;
+import com.mapbox.mapboxsdk.Mapbox;
 
+import androidx.annotation.MenuRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.View;
 
@@ -14,23 +20,58 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-
+    private MainViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Mapbox.getInstance(getApplicationContext(), getString(R.string.map_box_access_token));
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        fab.setOnClickListener(view -> {
+            if (viewModel.getCurrentFocuse().getValue()!=null){
+                viewModel.addNewpoitn(viewModel.getCurrentFocuse().getValue());
             }
         });
+
+        FloatingActionButton customizeButton = findViewById(R.id.customize);
+        customizeButton.setOnClickListener(view ->{
+            showMenu(view,R.menu.popup_menu);
+        });
+
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (currentFragment == null){
+            Fragment startingFragment= new MapFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.nav_host_fragment,startingFragment)
+                    .commit();
+        }
+
+
     }
+
+    private void showMenu(View view, @MenuRes int popup_menu) {
+        PopupMenu menu = new PopupMenu(getApplicationContext(),view);
+        menu.getMenuInflater().inflate(popup_menu,menu.getMenu());
+        menu.setOnMenuItemClickListener(menuItem ->{
+            switch (menuItem.getItemId()){
+                case R.id.monochromeDarkSyle:
+                viewModel.changeCurrentStyle(MapboxStyle.monochromeDarkSyle());
+                break;
+                case R.id.defaultStyle:
+                    viewModel.changeCurrentStyle(MapboxStyle.defaultSty());
+                    break;
+            }
+            return true;
+        });
+
+        menu.show();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

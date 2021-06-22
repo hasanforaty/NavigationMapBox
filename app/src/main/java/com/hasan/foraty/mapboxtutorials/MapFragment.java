@@ -5,8 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.hasan.foraty.mapboxtutorials.databinding.FragmentMapBinding;
@@ -14,6 +17,7 @@ import com.hasan.foraty.mapboxtutorials.viewmodel.MainViewModel;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.CustomLayer;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
@@ -79,6 +83,8 @@ public class MapFragment extends Fragment {
 
 
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+
+
     }
 
     @Override
@@ -97,7 +103,10 @@ public class MapFragment extends Fragment {
 
         });
 
-
+        mainViewModel.getCurrentMapBoxStyle().observe(getViewLifecycleOwner(), builder -> {
+            if (mapboxMap==null) return;
+            configureMapBoxMapStyle(mapboxMap);
+        });
 
 
         // Inflate the layout for this fragment
@@ -106,7 +115,7 @@ public class MapFragment extends Fragment {
 
     private void configureMapBoxMapStyle(MapboxMap mapboxMap){
         mapboxMap.setStyle(
-                mainViewModel.getCurrentMapBoxStyle()
+                mainViewModel.getCurrentMapBoxStyle().getValue()
                 .withImage(ICON_ID,mainViewModel.getCurrentLocationIcon(getResources()))
                 .withSource(mainViewModel.getGeoJsonSource())
                 .withLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)

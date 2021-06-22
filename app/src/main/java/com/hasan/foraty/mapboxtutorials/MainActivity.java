@@ -14,10 +14,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.View;
-
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+
 
 public class MainActivity extends AppCompatActivity {
     private MainViewModel viewModel;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMenu(View view, @MenuRes int popup_menu) {
-        PopupMenu menu = new PopupMenu(getApplicationContext(),view);
+        PopupMenu menu = new PopupMenu(this,view);
         menu.getMenuInflater().inflate(popup_menu,menu.getMenu());
         menu.setOnMenuItemClickListener(menuItem ->{
             switch (menuItem.getItemId()){
@@ -68,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
         menu.show();
+
     }
 
 

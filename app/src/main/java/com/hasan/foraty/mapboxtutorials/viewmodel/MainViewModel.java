@@ -1,6 +1,5 @@
 package com.hasan.foraty.mapboxtutorials.viewmodel;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 
@@ -24,7 +23,7 @@ public class MainViewModel extends ViewModel {
     private final List<Feature> dataFromRep = new ArrayList<>();
     private final GeoJsonSource geoJsonSource ;
     private Bitmap currentLocationIcon;
-    private Style.Builder currentMapBoxStyle ;
+    private MutableLiveData currentMapBoxStyle ;
 
     public Bitmap getCurrentLocationIcon(Resources res) {
         if (currentLocationIcon==null){
@@ -33,14 +32,14 @@ public class MainViewModel extends ViewModel {
         return currentLocationIcon ;
     }
 
-    public Style.Builder getCurrentMapBoxStyle() {
+    public LiveData<Style.Builder> getCurrentMapBoxStyle() {
         if (currentMapBoxStyle==null){
-            currentMapBoxStyle = MapboxStyle.defaultSty();
+            currentMapBoxStyle = new MutableLiveData(MapboxStyle.monochromeDarkSyle());
         }
         return currentMapBoxStyle;
     }
     public void changeCurrentStyle(Style.Builder styleBuilder){
-        currentMapBoxStyle = styleBuilder;
+        currentMapBoxStyle.postValue(styleBuilder);
     }
 
     public MainViewModel() {

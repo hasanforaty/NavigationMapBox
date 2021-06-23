@@ -1,13 +1,17 @@
 package com.hasan.foraty.mapboxtutorials;
 
+import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
 import com.hasan.foraty.mapboxtutorials.viewmodel.MainViewModel;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.Style;
 
 import androidx.annotation.MenuRes;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
@@ -22,6 +26,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private MainViewModel viewModel;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton customizeButton = findViewById(R.id.customize);
         customizeButton.setOnClickListener(view ->{
             showMenu(view,R.menu.popup_menu);
+        });
+
+        FloatingActionButton createPolygonIcon = findViewById(R.id.polygon);
+        createPolygonIcon.setOnClickListener(view ->{
+            viewModel.createPolygon();
         });
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);

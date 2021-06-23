@@ -13,8 +13,8 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
 
 public class MapboxStyle {
-    private static final String  MonochromeDarkSyle = "mapbox://styles/hasanforaty/ckq4zlheq5vln17n6se3g4qf2";
-    private static final String DefaultStyle = "mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41";
+    public static final String  MonochromeDarkSyle = "mapbox://styles/hasanforaty/ckq4zlheq5vln17n6se3g4qf2";
+    public static final String DefaultStyle = "mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41";
     public static Style.Builder defaultSty() {
         return new Style.Builder().fromUri(DefaultStyle);
     }

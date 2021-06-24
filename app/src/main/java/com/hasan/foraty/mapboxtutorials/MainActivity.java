@@ -1,6 +1,5 @@
 package com.hasan.foraty.mapboxtutorials;
 
-import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -8,7 +7,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
 import com.hasan.foraty.mapboxtutorials.viewmodel.MainViewModel;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.Style;
+import com.nambimobile.widgets.efab.FabOption;
 
 import androidx.annotation.MenuRes;
 import androidx.annotation.RequiresApi;
@@ -61,6 +60,17 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.nav_host_fragment,startingFragment)
                     .commit();
         }
+
+        FabOption addWms = findViewById(R.id.add_wms);
+        addWms.setOnClickListener(v -> {
+            viewModel.changeWmsLayoutState(true);
+        });
+
+        FabOption removeWms = findViewById(R.id.remove_wms);
+        removeWms.setOnClickListener(v -> {
+            viewModel.changeWmsLayoutState(false);
+        });
+
 
 
     }

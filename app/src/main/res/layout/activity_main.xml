@@ -98,6 +98,30 @@
             app:ensureMinTouchTargetSize="false"
             app:label_text="@string/draw_polygon"
             app:srcCompat="@drawable/polygon_13567" />
+    <com.nambimobile.widgets.efab.FabOption
+        android:id="@+id/add_wms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#232D63"
+        android:contentDescription="@string/add_wms"
+        app:ensureMinTouchTargetSize="false"
+        app:label_text="@string/add_wms"
+        app:srcCompat="@drawable/add_wms"
+        />
+    <com.nambimobile.widgets.efab.FabOption
+        android:id="@+id/remove_wms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#0E1A5C"
+        android:contentDescription="@string/remove_wms"
+        app:ensureMinTouchTargetSize="false"
+        app:label_text="@string/remove_wms"
+        app:srcCompat="@drawable/remove_wms"
+        />
 
 
 

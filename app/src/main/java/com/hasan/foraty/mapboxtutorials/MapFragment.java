@@ -2,6 +2,7 @@ package com.hasan.foraty.mapboxtutorials;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.service.quicksettings.Tile;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +16,21 @@ import androidx.lifecycle.ViewModelProvider;
 import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
 import com.hasan.foraty.mapboxtutorials.databinding.FragmentMapBinding;
 import com.hasan.foraty.mapboxtutorials.viewmodel.MainViewModel;
+import com.mapbox.geojson.BoundingBox;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.RasterLayer;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.RasterSource;
+import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.mapboxsdk.style.sources.TileSet;
+
+import java.util.List;
 
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
@@ -105,8 +114,9 @@ public class MapFragment extends Fragment {
         mapView.getMapAsync(mapboxMap -> {
             MapFragment.this.mapboxMap = mapboxMap;
             mapboxMap.setStyle(MapboxStyle.defaultSty(),onStyleLoaded);
-            mapboxMap.addOnMapClickListener(onMapClickListener());
+
         });
+        mainViewModel.getWmsLayoutState().observe(getViewLifecycleOwner(), this::changeInWMS);
 
         mainViewModel.getCurrentMapBoxStyle().observe(getViewLifecycleOwner(), builder -> {
             if (mapboxMap==null) return;
@@ -120,6 +130,9 @@ public class MapFragment extends Fragment {
             style.addSource(
                     new RasterSource(MainViewModel.Terrain_Source_Id,new TileSet("tileSet", "http://MT0.google.com/vt/lyrs=r&x={x}&y={y}&z={z}")
             ));
+
+
+
 //            style.addSource(
 //                    new RasterSource("terrain-data",new TileSet("tileSet","http://MT0.google.com/vt/lyrs=r&x={x}&y={y}&z={z}"))
 //            );
@@ -133,9 +146,15 @@ public class MapFragment extends Fragment {
 //                    lineWidth(1.9f)
 //            );
             Log.d(TAG, "onCreateView: "+style);
+            if (style.getLayer(MainViewModel.WMS_Layer_Id)!=null){
+                style.addLayerBelow(new RasterLayer(MainViewModel.Terrain_Layer_Id,MainViewModel.Terrain_Source_Id),MainViewModel.WMS_Layer_Id);
+            }else {
+                style.addLayerBelow(new RasterLayer(MainViewModel.Terrain_Layer_Id,MainViewModel.Terrain_Source_Id),MainViewModel.COUNTRY_LAYER_ID);
+            }
+            LatLng latLng = mapboxMap.getProjection().getVisibleRegion().farLeft;
+//            LatLngBounds lat = mapboxMap.getProjection().getVisibleRegion().latLngBounds.getLatNorth();
+//            BoundingBox boundingBox = BoundingBox.fromJson()
 
-            style.addLayer(new RasterLayer(MainViewModel.Terrain_Layer_Id,MainViewModel.Terrain_Source_Id));
-            mapboxMap.addOnMapClickListener(onMapClickListener());
         });
 
         mainViewModel.getListOfPolygonLayer().observe(getViewLifecycleOwner(),sourceLayerMap -> {
@@ -159,6 +178,30 @@ public class MapFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void changeInWMS(Boolean state) {
+        if (mainViewModel == null)return;
+        if (mapboxMap==null) return;
+        if (mapboxMap.getStyle() == null) return;
+        if (!mapboxMap.getStyle().isFullyLoaded()) return;
+        mapboxMap.getStyle().removeLayer(MainViewModel.WMS_Layer_Id);
+        mapboxMap.getStyle().removeSource(MainViewModel.WMS_Source_Id);
+        if (state){
+            RasterSource source = new RasterSource(MainViewModel.WMS_Source_Id,mainViewModel.getWmsTileSet(),256);
+
+            RasterLayer layer = new RasterLayer(MainViewModel.WMS_Layer_Id,MainViewModel.WMS_Source_Id);
+            mapboxMap.getStyle().addSource(source);
+            mapboxMap.getStyle().addLayerBelow(layer,MainViewModel.COUNTRY_LAYER_ID);
+
+
+        }
+        List<Layer> layers = mapboxMap.getStyle().getLayers();
+        for (int i =0;i<layers.size();i++){
+            Log.d(TAG, "changeInWMS: "+layers.get(i).getId());
+        }
+
+
+    }
+
 
     private MapboxMap.OnMapClickListener onMapClickListener(){
         return point -> {
@@ -177,6 +220,8 @@ public class MapFragment extends Fragment {
                         iconIgnorePlacement(true)
                 )
         );
+        mapboxMap.addOnMapClickListener(onMapClickListener());
     };
+
 
 }

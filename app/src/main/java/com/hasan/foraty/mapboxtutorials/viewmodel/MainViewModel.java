@@ -23,6 +23,7 @@ import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
+import com.mapbox.mapboxsdk.style.sources.TileSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,11 @@ public class MainViewModel extends ViewModel {
     public static final String Terrain_Source_Id = "terrain_Source_Id";
     public static final String Terrain_Layer_Id = "terrain_Layer_Id";
     private static final String SOURCE_ID = "SOURCE_ID";
+    private static final String WMS_TILE_ID = "WMS_TILE_ID";
+
+    public static final String WMS_Source_Id = "Wms_Source_Id";
+    public static final String WMS_Layer_Id =  "Wms_layer_Id";
+    public static final String COUNTRY_LAYER_ID ="country-label";
     private final List<Feature> dataFromRep = new ArrayList<>();
     private final LinkedList<Point> currentPoint = new LinkedList<>();
     private final GeoJsonSource geoJsonSource ;
@@ -45,6 +51,51 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Style.Builder> currentMapBoxStyle ;
 
     private MutableLiveData<Map<Source,Layer>> listOfPolygonLayer;
+
+    private MutableLiveData<Boolean> wmsLayoutState = new MutableLiveData<>(false);
+
+    private TileSet wmsTileSet ;
+
+    public MainViewModel() {
+        geoJsonSource = new GeoJsonSource(SOURCE_ID);
+        ArrayList<String> wmsTileSetUrls = new ArrayList<>();
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050755.159054551%2C3748471.8671050426%2C6051366.655280833%2C3749083.363331324");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050755.159054551%2C3749083.3633313254%2C6051366.655280833%2C3749694.8595576067");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050143.66282827%2C3748471.8671050426%2C6050755.159054552%2C3749083.363331324");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6051366.655280832%2C3747860.3708787616%2C6051978.151507114%2C3748471.867105043");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6051366.655280832%2C3747860.3708787616%2C6051978.151507114%2C3748471.867105043");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050755.159054551%2C3749083.3633313254%2C6051366.655280833%2C3749694.8595576067");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050755.159054551%2C3748471.8671050426%2C6051366.655280833%2C3749083.363331324");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6051366.655280832%2C3749083.3633313254%2C6051978.151507114%2C3749694.8595576067");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6051366.655280832%2C3748471.8671050426%2C6051978.151507114%2C3749083.363331324");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050143.66282827%2C3747860.3708787616%2C6050755.159054552%2C3748471.867105043");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050143.66282827%2C3747860.3708787616%2C6050755.159054552%2C3748471.867105043");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050143.66282827%2C3749083.3633313254%2C6050755.159054552%2C3749694.8595576067");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050143.66282827%2C3749083.3633313254%2C6050755.159054552%2C3749694.8595576067");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050143.66282827%2C3748471.8671050426%2C6050755.159054552%2C3749083.363331324");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6051366.655280832%2C3749083.3633313254%2C6051978.151507114%2C3749694.8595576067");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6051366.655280832%2C3748471.8671050426%2C6051978.151507114%2C3749083.363331324");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511544684&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050755.159054551%2C3747860.3708787616%2C6051366.655280833%2C3748471.867105043");
+//        wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624511536316&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX=6050755.159054551%2C3747860.3708787616%2C6051366.655280833%2C3748471.867105043");
+            wmsTileSetUrls.add("http://192.168.11.47/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=GeoTajak%3Aamlak_6566_2113&STYLES=&DATE=1624515051294&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&BBOX={bbox-epsg-3857}");
+        String [] tiles = new String[wmsTileSetUrls.size()];
+        wmsTileSetUrls.toArray(tiles);
+
+        wmsTileSet = new TileSet(WMS_TILE_ID,tiles);
+
+    }
+
+    public TileSet getWmsTileSet() {
+        return wmsTileSet;
+    }
+
+    public LiveData<Boolean> getWmsLayoutState() {
+        return wmsLayoutState;
+    }
+
+    public void changeWmsLayoutState(Boolean state){
+        wmsLayoutState.postValue(state);
+    }
 
     public LiveData<Map<Source, Layer>> getListOfPolygonLayer() {
         if (listOfPolygonLayer==null){
@@ -92,9 +143,7 @@ public class MainViewModel extends ViewModel {
         currentMapBoxStyle.postValue(styleBuilder);
     }
 
-    public MainViewModel() {
-        geoJsonSource = new GeoJsonSource(SOURCE_ID);
-    }
+
 
     private final MutableLiveData<LatLng> currentFocusMutable = new MutableLiveData<>();
 

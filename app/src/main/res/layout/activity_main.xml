@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    <com.nambimobile.widgets.efab.ExpandableFabLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTint="#B69B9B"
-    tools:context=".MainActivity">
+        android:id="@+id/expandable_fab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="#B69B9B"
+        tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -25,8 +35,6 @@
             app:popupTheme="@style/Theme.MapBoxTutorials.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:layout_width="0dp"
@@ -41,43 +49,100 @@
         app:layout_constraintVertical_bias="0.0">
 
     </androidx.fragment.app.FragmentContainerView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/add_location_button"
-        app:ensureMinTouchTargetSize="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add_location" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/customize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="#AC9494"
-        android:contentDescription="@string/add_location_button"
-        app:ensureMinTouchTargetSize="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        app:srcCompat="@drawable/ic_customize" />
+        <com.nambimobile.widgets.efab.ExpandableFab
+            android:id="@+id/expandable_actionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            app:efab_closingAnticipateTension="0"
+            app:efab_color="#C0CF27"
+            app:efab_icon="@drawable/ic_expand"
+            app:efab_iconAnimationRotationDeg="-225"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            app:label_text="options" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/polygon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#91A0D6"
-        android:contentDescription="@string/add_location_button"
-        app:ensureMinTouchTargetSize="false"
-        app:layout_constraintBottom_toTopOf="@id/fab"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/polygon_13567" />
+        <com.nambimobile.widgets.efab.FabOption
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/add_location_button"
+            app:label_text="@string/add_location_button"
+            app:srcCompat="@drawable/ic_add_location" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.nambimobile.widgets.efab.FabOption
+            android:id="@+id/customize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#AC9494"
+            android:contentDescription="@string/change_style"
+            app:ensureMinTouchTargetSize="false"
+            app:label_text="@string/change_style"
+            app:srcCompat="@drawable/ic_customize" />
+
+        <com.nambimobile.widgets.efab.FabOption
+            android:id="@+id/polygon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#91A0D6"
+            android:contentDescription="@string/draw_polygon"
+            app:ensureMinTouchTargetSize="false"
+            app:label_text="@string/draw_polygon"
+            app:srcCompat="@drawable/polygon_13567" />
+
+
+
+    </com.nambimobile.widgets.efab.ExpandableFabLayout>
+
+
+
+
+
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:contentDescription="@string/add_location_button"-->
+<!--        app:ensureMinTouchTargetSize="false"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/ic_add_location" />-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/customize"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:backgroundTint="#AC9494"-->
+<!--        android:contentDescription="@string/add_location_button"-->
+<!--        app:ensureMinTouchTargetSize="false"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"-->
+<!--        app:srcCompat="@drawable/ic_customize" />-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/polygon"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:backgroundTint="#91A0D6"-->
+<!--        android:contentDescription="@string/add_location_button"-->
+<!--        app:ensureMinTouchTargetSize="false"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/fab"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/polygon_13567" />-->
+

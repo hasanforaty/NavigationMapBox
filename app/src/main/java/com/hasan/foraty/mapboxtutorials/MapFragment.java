@@ -111,10 +111,12 @@ public class MapFragment extends Fragment {
         mainViewModel.getCurrentMapBoxStyle().observe(getViewLifecycleOwner(), builder -> {
             if (mapboxMap==null) return;
             if (mapboxMap.getStyle()==null)return;
-            if (mapboxMap.getStyle().getUri().equals(builder.getUri()))return;
             Style style = mapboxMap.getStyle();
             style.removeLayer(MainViewModel.Terrain_Layer_Id);
             style.removeSource(MainViewModel.Terrain_Source_Id);
+
+            if (builder.getUri().equals(MapboxStyle.defaultSty().getUri())) return;
+
             style.addSource(
                     new RasterSource(MainViewModel.Terrain_Source_Id,new TileSet("tileSet", "http://MT0.google.com/vt/lyrs=r&x={x}&y={y}&z={z}")
             ));
@@ -143,7 +145,7 @@ public class MapFragment extends Fragment {
             sourceLayerMap.forEach((source, layer) -> {
                 try {
                     mapboxMap.getStyle().addSource(source);
-                    mapboxMap.getStyle().addLayerAbove(layer,LAYER_ID);
+                    mapboxMap.getStyle().addLayerBelow(layer,LAYER_ID);
                 }catch (Exception e){
                     Log.d(TAG, "onCreateView:"+e);
                 }finally {
@@ -165,13 +167,7 @@ public class MapFragment extends Fragment {
         } ;
     }
 
-    private void changeStyle(Style.Builder styleBuilder){
-        if (mapboxMap==null) return;
-        mainViewModel.changeCurrentStyle(styleBuilder);
-    }
-
     private final Style.OnStyleLoaded onStyleLoaded = style -> {
-        style.getTransition();
         style.addSource(mainViewModel.getGeoJsonSource());
         style.addImage(ICON_ID,mainViewModel.getCurrentLocationIcon(getResources()));
         style.addLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)

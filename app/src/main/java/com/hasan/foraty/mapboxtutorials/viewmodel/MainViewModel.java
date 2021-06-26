@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
 import com.hasan.foraty.mapboxtutorials.network.RetrofitServerApi;
+import com.hasan.foraty.mapboxtutorials.network.ServerResponse;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 
@@ -197,17 +198,29 @@ public class MainViewModel extends ViewModel {
         return currentFocusMutable;
     }
 
-    public void getFocusePointClick(LatLng point, String bbox, Consumer<String> callBack){
-        retrofit.getPointDetail(bbox,point.getLongitude(),point.getLatitude()).enqueue(new Callback<ResponseBody>() {
+    public void getFocusePointClick(float x,float y, String bbox, Consumer<ServerResponse> callBack){
+        retrofit.getPointDetail(bbox,y,x).enqueue(new Callback<ServerResponse>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                callBack.accept(response.headers().toString());
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                Log.d(TAG, "onResponse: body :"+response.body());
+                callBack.accept(response.body());
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, "onFailure: faile why :",t);
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Log.d(TAG, "onFailure: faile becouse ",t);
+                retrofit.getPointDetailTest(bbox,y,x).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.d(TAG, "onResponse: "+response);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
             }
         });
     }

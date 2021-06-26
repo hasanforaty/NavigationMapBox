@@ -1,5 +1,6 @@
 package com.hasan.foraty.mapboxtutorials;
 
+import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.service.quicksettings.Tile;
@@ -221,9 +222,10 @@ public class MapFragment extends Fragment {
         VisibleRegion visibleRegion = currentProjection.getVisibleRegion();
         LatLngBounds latLngBounds = visibleRegion.latLngBounds;
         BoundingBox boundingBox =BoundingBox.fromPoints(Point.fromLngLat(latLngBounds.getSouthWest().getLongitude(),latLngBounds.getSouthWest().getLatitude()),Point.fromLngLat(latLngBounds.getNorthWest().getLongitude(),latLngBounds.getNorthWest().getLatitude()));
-        mainViewModel.getFocusePointClick(point,boundingBox.toJson(),s -> {
-            Toast.makeText(requireContext(),"response = "+s,Toast.LENGTH_LONG).show();
-            Log.d(TAG, "getResponse: "+s);
+        PointF currentScreenLocation = currentProjection.toScreenLocation(point);
+        mainViewModel.getFocusePointClick(currentScreenLocation.x,currentScreenLocation.y,boundingBox.toJson(),serverResponse -> {
+            Toast.makeText(requireContext(),"response = "+serverResponse,Toast.LENGTH_LONG).show();
+            Log.d(TAG, "getResponse: "+serverResponse);
         });
         Log.d(TAG, "getResponse: Point y: "+point.getLatitude()+" x: "+point.getLongitude());
 //        Toast.makeText(requireContext(),"bourndry box : "+boundingBox.toJson(),Toast.LENGTH_LONG).show();

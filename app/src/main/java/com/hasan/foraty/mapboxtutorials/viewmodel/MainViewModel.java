@@ -3,7 +3,9 @@ package com.hasan.foraty.mapboxtutorials.viewmodel;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
@@ -11,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
+import com.hasan.foraty.mapboxtutorials.network.RetrofitServerApi;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 
@@ -20,22 +23,28 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.layers.Layer;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.mapboxsdk.style.sources.TileSet;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 
 public class MainViewModel extends ViewModel {
-
+    private static final String TAG = "MainViewModel";
     public static final String Terrain_Source_Id = "terrain_Source_Id";
     public static final String Terrain_Layer_Id = "terrain_Layer_Id";
     private static final String SOURCE_ID = "SOURCE_ID";
@@ -55,6 +64,19 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Boolean> wmsLayoutState = new MutableLiveData<>(false);
 
     private TileSet wmsTileSet ;
+
+    private Boolean responseState = false;
+    private final MutableLiveData<LatLng> currentFocusMutable = new MutableLiveData<>();
+
+    private final RetrofitServerApi retrofit = RetrofitServerApi.getInstance();
+
+    public Boolean getResponseState() {
+        return responseState;
+    }
+
+    public void setResponseState(Boolean responseState) {
+        this.responseState = responseState;
+    }
 
     public MainViewModel() {
         geoJsonSource = new GeoJsonSource(SOURCE_ID);
@@ -145,7 +167,7 @@ public class MainViewModel extends ViewModel {
 
 
 
-    private final MutableLiveData<LatLng> currentFocusMutable = new MutableLiveData<>();
+
 
 
 
@@ -173,6 +195,21 @@ public class MainViewModel extends ViewModel {
 
     public LiveData<LatLng> getCurrentFocuse() {
         return currentFocusMutable;
+    }
+
+    public void getFocusePointClick(LatLng point, String bbox, Consumer<String> callBack){
+        retrofit.getPointDetail(bbox,point.getLongitude(),point.getLatitude()).enqueue(new Callback<ResponseBody>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                callBack.accept(response.headers().toString());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, "onFailure: faile why :",t);
+            }
+        });
     }
 
 

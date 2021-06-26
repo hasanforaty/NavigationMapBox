@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
@@ -20,8 +21,10 @@ import com.mapbox.geojson.BoundingBox;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+import com.mapbox.mapboxsdk.geometry.VisibleRegion;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Projection;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.RasterLayer;
@@ -206,8 +209,24 @@ public class MapFragment extends Fragment {
     private MapboxMap.OnMapClickListener onMapClickListener(){
         return point -> {
             mainViewModel.changeCurrentFocus(point);
+            if (mainViewModel.getResponseState()){
+                getResponse(point);
+            }
             return true;
         } ;
+    }
+
+    private void getResponse(LatLng point) {
+        Projection currentProjection =mapboxMap.getProjection();
+        VisibleRegion visibleRegion = currentProjection.getVisibleRegion();
+        LatLngBounds latLngBounds = visibleRegion.latLngBounds;
+        BoundingBox boundingBox =BoundingBox.fromPoints(Point.fromLngLat(latLngBounds.getSouthWest().getLongitude(),latLngBounds.getSouthWest().getLatitude()),Point.fromLngLat(latLngBounds.getNorthWest().getLongitude(),latLngBounds.getNorthWest().getLatitude()));
+        mainViewModel.getFocusePointClick(point,boundingBox.toJson(),s -> {
+            Toast.makeText(requireContext(),"response = "+s,Toast.LENGTH_LONG).show();
+            Log.d(TAG, "getResponse: "+s);
+        });
+        Log.d(TAG, "getResponse: Point y: "+point.getLatitude()+" x: "+point.getLongitude());
+//        Toast.makeText(requireContext(),"bourndry box : "+boundingBox.toJson(),Toast.LENGTH_LONG).show();
     }
 
     private final Style.OnStyleLoaded onStyleLoaded = style -> {

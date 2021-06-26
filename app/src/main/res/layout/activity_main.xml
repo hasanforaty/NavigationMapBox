@@ -123,6 +123,20 @@
         app:srcCompat="@drawable/remove_wms"
         />
 
+    <com.nambimobile.widgets.efab.FabOption
+        android:id="@+id/response_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#DAC78E"
+        android:contentDescription="@string/response_on"
+        app:ensureMinTouchTargetSize="false"
+        app:label_text="@string/response_on"
+        app:srcCompat="@drawable/ic_response"
+        />
+
+
 
 
     </com.nambimobile.widgets.efab.ExpandableFabLayout>

@@ -21,4 +21,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="defaultstyle">default Style</string>
     <string name="monochromedark_syle">monochromeDark Syle</string>
+    <string name="response_on">Response On</string>
+    <string name="response_off">Response Off</string>
 </resources>

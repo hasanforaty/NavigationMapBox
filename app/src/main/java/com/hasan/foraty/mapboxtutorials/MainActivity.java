@@ -71,6 +71,17 @@ public class MainActivity extends AppCompatActivity {
             viewModel.changeWmsLayoutState(false);
         });
 
+        FabOption responseState = findViewById(R.id.response_state);
+        responseState.setOnClickListener(v -> {
+            if (responseState.getLabel().getText().equals(getString(R.string.response_on))){
+                viewModel.setResponseState(true);
+                responseState.getLabel().setText(R.string.response_off);
+            }else {
+                viewModel.setResponseState(false);
+                responseState.getLabel().setText(R.string.response_on);
+            }
+        });
+
 
 
     }

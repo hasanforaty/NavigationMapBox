@@ -3,7 +3,6 @@ package com.hasan.foraty.mapboxtutorials;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
-import android.service.quicksettings.Tile;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.hasan.foraty.mapboxtutorials.common.MapboxStyle;
 import com.hasan.foraty.mapboxtutorials.databinding.FragmentMapBinding;
+import com.hasan.foraty.mapboxtutorials.network.ServerResponse;
 import com.hasan.foraty.mapboxtutorials.viewmodel.MainViewModel;
 import com.mapbox.geojson.BoundingBox;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.geometry.VisibleRegion;
@@ -31,7 +30,6 @@ import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.RasterLayer;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.RasterSource;
-import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.mapboxsdk.style.sources.TileSet;
 
 import java.util.List;
@@ -221,14 +219,21 @@ public class MapFragment extends Fragment {
         Projection currentProjection =mapboxMap.getProjection();
         VisibleRegion visibleRegion = currentProjection.getVisibleRegion();
         LatLngBounds latLngBounds = visibleRegion.latLngBounds;
-        BoundingBox boundingBox =BoundingBox.fromPoints(Point.fromLngLat(latLngBounds.getSouthWest().getLongitude(),latLngBounds.getSouthWest().getLatitude()),Point.fromLngLat(latLngBounds.getNorthWest().getLongitude(),latLngBounds.getNorthWest().getLatitude()));
+        BoundingBox boundingBox =BoundingBox.fromLngLats(latLngBounds.getLonWest(),latLngBounds.getLatSouth(),latLngBounds.getLonEast(),latLngBounds.getLatNorth());
         PointF currentScreenLocation = currentProjection.toScreenLocation(point);
-        mainViewModel.getFocusePointClick(currentScreenLocation.x,currentScreenLocation.y,boundingBox.toJson(),serverResponse -> {
-            Toast.makeText(requireContext(),"response = "+serverResponse,Toast.LENGTH_LONG).show();
-            Log.d(TAG, "getResponse: "+serverResponse);
-        });
-        Log.d(TAG, "getResponse: Point y: "+point.getLatitude()+" x: "+point.getLongitude());
-//        Toast.makeText(requireContext(),"bourndry box : "+boundingBox.toJson(),Toast.LENGTH_LONG).show();
+        int x = (int)currentScreenLocation.x;
+        int y =(int)currentScreenLocation.y;
+        String boundary = boundingBox.toJson().replace("[","").replace("]","");
+        mainViewModel.getFocusPointClick(x,y,boundary, this::serverResponsePrint);
+    }
+
+    private void serverResponsePrint(ServerResponse serverResponse){
+
+        String builder = "Total Features: " + serverResponse.totalFeatures +
+                "type : " + serverResponse.type +
+                "features : { " + serverResponse.features.toString();
+        Log.d(TAG, "serverResponcePrint: "+ builder);
+        Toast.makeText(requireContext(),"response = "+builder,Toast.LENGTH_LONG).show();
     }
 
     private final Style.OnStyleLoaded onStyleLoaded = style -> {

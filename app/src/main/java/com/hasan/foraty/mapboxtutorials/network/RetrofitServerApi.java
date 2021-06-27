@@ -9,7 +9,6 @@ import java.util.List;
 
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -44,10 +43,7 @@ public class RetrofitServerApi {
         return retrofitServerApi;
     }
 
-    public Call<ServerResponse> getPointDetail(String BBox, float y, float x){
-        return serverApi.getResponceForClick(x,y,BBox);
-    }
-    public Call<ResponseBody> getPointDetailTest(String BBox, float y, float x){
-        return serverApi.getResponceForClickTest(x,y,BBox);
+    public Call<ServerResponse> getPointDetail(String BBox, int y, int x){
+        return serverApi.getResponseForClick(x,y,BBox);
     }
 }

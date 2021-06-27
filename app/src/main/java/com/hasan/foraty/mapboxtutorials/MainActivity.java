@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            if (viewModel.getCurrentFocuse().getValue()!=null){
-                viewModel.addNewpoitn(viewModel.getCurrentFocuse().getValue());
+            if (viewModel.getCurrentFocus().getValue()!=null){
+                viewModel.addNewpoitn(viewModel.getCurrentFocus().getValue());
             }
         });
 

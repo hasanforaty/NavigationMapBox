@@ -3,7 +3,6 @@ package com.hasan.foraty.mapboxtutorials.viewmodel;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -28,7 +27,6 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.mapboxsdk.style.sources.TileSet;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,7 +35,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -194,11 +191,11 @@ public class MainViewModel extends ViewModel {
         return geoJsonSource;
     }
 
-    public LiveData<LatLng> getCurrentFocuse() {
+    public LiveData<LatLng> getCurrentFocus() {
         return currentFocusMutable;
     }
 
-    public void getFocusePointClick(float x,float y, String bbox, Consumer<ServerResponse> callBack){
+    public void getFocusPointClick(int x, int y, String bbox, Consumer<ServerResponse> callBack){
         retrofit.getPointDetail(bbox,y,x).enqueue(new Callback<ServerResponse>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -210,17 +207,9 @@ public class MainViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
                 Log.d(TAG, "onFailure: faile becouse ",t);
-                retrofit.getPointDetailTest(bbox,y,x).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Log.d(TAG, "onResponse: "+response);
-                    }
+                Log.d(TAG, "onFailure: url request "+call.request().url());
+                Log.d(TAG, "onFailure: BBox :"+bbox.toString());
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                    }
-                });
             }
         });
     }
